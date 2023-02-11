@@ -167,7 +167,7 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
                 context.translate("commands.error.user", null)
             }
 
-            respondText(context, errorMessage, FailureReason.ExecutionError(t))
+            respondText(context, errorMessage, FailureReason.ExecutionError(t, sentryId))
         } else {
             respondText(
                 context,

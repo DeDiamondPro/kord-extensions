@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.types
 
 import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import io.sentry.protocol.SentryId
 
 /**
  * Sealed class representing the reason you're dealing with a failure message right now.
@@ -23,7 +24,7 @@ public sealed class FailureReason<E : Throwable>(public val error: E) {
         FailureReason<E>(error)
 
     /** Type representing an error thrown during command/component execution. **/
-    public class ExecutionError(error: Throwable) :
+    public class ExecutionError(error: Throwable, public val sentryId: SentryId? = null) :
         FailureReason<Throwable>(error)
 
     /** Type representing a relayed exception that was thrown during command execution. **/

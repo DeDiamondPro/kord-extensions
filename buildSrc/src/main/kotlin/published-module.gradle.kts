@@ -26,6 +26,19 @@ publishing {
 
             version = project.version
         }
+
+        maven {
+            name = "diamond"
+
+            url = uri("https://maven.dediamondpro.dev/releases")
+
+            credentials {
+                username = System.getenv("DIAMOND_USER")
+                password = System.getenv("DIAMOND_PASSWORD")
+            }
+
+            version = project.version
+        }
     }
 
     publications {

@@ -91,7 +91,7 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext, 
                 context.translate("commands.error.user", null)
             }
 
-            respondText(context, errorMessage, FailureReason.ExecutionError(t))
+            respondText(context, errorMessage, FailureReason.ExecutionError(t, sentryId))
         } else {
             respondText(
                 context,

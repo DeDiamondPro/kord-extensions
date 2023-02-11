@@ -499,7 +499,7 @@ public open class ChatCommand<T : Arguments>(
                                 )
                             ),
 
-                            FailureReason.ExecutionError(t)
+                            FailureReason.ExecutionError(t, sentryId)
                         )
                     }
                 } else {
@@ -507,7 +507,7 @@ public open class ChatCommand<T : Arguments>(
                         settings.failureResponseBuilder(
                             this,
                             context.translate("commands.error.user", null),
-                            FailureReason.ExecutionError(t)
+                            FailureReason.ExecutionError(t, sentryId)
                         )
                     }
                 }
