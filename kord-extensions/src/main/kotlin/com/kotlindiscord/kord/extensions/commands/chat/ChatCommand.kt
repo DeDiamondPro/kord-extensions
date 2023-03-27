@@ -267,7 +267,8 @@ public open class ChatCommand<T : Arguments>(
 
                             FailureReason.ProvidedCheckFailure(
                                 DiscordRelayedException(message, context.errorResponseKey)
-                            )
+                            ),
+                            locale
                         )
                     }
                 }
@@ -293,7 +294,8 @@ public open class ChatCommand<T : Arguments>(
 
                             FailureReason.ProvidedCheckFailure(
                                 DiscordRelayedException(message, context.errorResponseKey)
-                            )
+                            ),
+                            locale
                         )
                     }
                 }
@@ -318,7 +320,8 @@ public open class ChatCommand<T : Arguments>(
 
                             FailureReason.ProvidedCheckFailure(
                                 DiscordRelayedException(message, context.errorResponseKey)
-                            )
+                            ),
+                            locale
                         )
                     }
                 }
@@ -352,7 +355,7 @@ public open class ChatCommand<T : Arguments>(
         parser: StringParser,
         argString: String,
         skipChecks: Boolean = false,
-        cache: MutableStringKeyedMap<Any> = mutableMapOf()
+        cache: MutableStringKeyedMap<Any> = mutableMapOf(),
     ): Unit = withLock {
         emitEventAsync(ChatCommandInvocationEvent(this, event))
 
@@ -372,7 +375,12 @@ public open class ChatCommand<T : Arguments>(
             emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
 
             event.message.respond {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+                settings.failureResponseBuilder(
+                    this,
+                    e.reason,
+                    FailureReason.ProvidedCheckFailure(e),
+                    event.getLocale()
+                )
             }
 
             return@withLock
@@ -412,7 +420,12 @@ public open class ChatCommand<T : Arguments>(
             checkBotPerms(context)
         } catch (e: DiscordRelayedException) {
             event.message.respond {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+                settings.failureResponseBuilder(
+                    this,
+                    e.reason,
+                    FailureReason.OwnPermissionsCheckFailure(e),
+                    event.getLocale()
+                )
             }
 
             emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
@@ -426,7 +439,12 @@ public open class ChatCommand<T : Arguments>(
                 context.populateArgs(parsedArgs)
             } catch (e: ArgumentParsingException) {
                 event.message.respond {
-                    settings.failureResponseBuilder(this, e.reason, FailureReason.ArgumentParsingFailure(e))
+                    settings.failureResponseBuilder(
+                        this,
+                        e.reason,
+                        FailureReason.ArgumentParsingFailure(e),
+                        event.getLocale()
+                    )
                 }
 
                 emitEventAsync(ChatCommandFailedParsingEvent(this, event, e))
@@ -442,7 +460,7 @@ public open class ChatCommand<T : Arguments>(
 
             if (t is DiscordRelayedException) {
                 event.message.respond {
-                    settings.failureResponseBuilder(this, t.reason, FailureReason.RelayedFailure(t))
+                    settings.failureResponseBuilder(this, t.reason, FailureReason.RelayedFailure(t), event.getLocale())
                 }
 
                 return@withLock
@@ -499,7 +517,8 @@ public open class ChatCommand<T : Arguments>(
                                 )
                             ),
 
-                            FailureReason.ExecutionError(t, sentryId)
+                            FailureReason.ExecutionError(t, sentryId),
+                            event.getLocale()
                         )
                     }
                 } else {
@@ -507,7 +526,8 @@ public open class ChatCommand<T : Arguments>(
                         settings.failureResponseBuilder(
                             this,
                             context.translate("commands.error.user", null),
-                            FailureReason.ExecutionError(t, sentryId)
+                            FailureReason.ExecutionError(t, sentryId),
+                            event.getLocale()
                         )
                     }
                 }
@@ -518,7 +538,8 @@ public open class ChatCommand<T : Arguments>(
                     settings.failureResponseBuilder(
                         this,
                         context.translate("commands.error.user", null),
-                        FailureReason.ExecutionError(t)
+                        FailureReason.ExecutionError(t),
+                        event.getLocale()
                     )
                 }
             }

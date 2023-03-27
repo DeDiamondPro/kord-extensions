@@ -73,7 +73,7 @@ internal typealias LocaleResolver = suspend (
 ) -> Locale?
 
 internal typealias FailureResponseBuilder =
-    suspend (MessageCreateBuilder).(message: String, type: FailureReason<*>) -> Unit
+    suspend (MessageCreateBuilder).(message: String, type: FailureReason<*>, locale: Locale) -> Unit
 
 /**
  * Builder class used for configuring and creating an [ExtensibleBot].
@@ -100,7 +100,7 @@ public open class ExtensibleBotBuilder {
     /**
      * @suppress Builder that shouldn't be set directly by the user.
      */
-    public var failureResponseBuilder: FailureResponseBuilder = { message, _ ->
+    public var failureResponseBuilder: FailureResponseBuilder = { message, _, _ ->
         allowedMentions { }
 
         content = message

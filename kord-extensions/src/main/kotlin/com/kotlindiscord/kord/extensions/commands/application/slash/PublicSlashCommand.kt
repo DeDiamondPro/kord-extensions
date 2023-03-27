@@ -37,7 +37,7 @@ public class PublicSlashCommand<A : Arguments, M : ModalForm>(
     public override val arguments: (() -> A)? = null,
     public override val modal: (() -> M)? = null,
     public override val parentCommand: SlashCommand<*, *, *>? = null,
-    public override val parentGroup: SlashGroup? = null
+    public override val parentGroup: SlashGroup? = null,
 ) : SlashCommand<PublicSlashCommandContext<A, M>, A, M>(extension) {
     /** @suppress Internal builder **/
     public var initialResponseBuilder: InitialPublicSlashResponseBehavior = null
@@ -80,7 +80,12 @@ public class PublicSlashCommand<A : Arguments, M : ModalForm>(
             }
         } catch (e: DiscordRelayedException) {
             event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+                settings.failureResponseBuilder(
+                    this,
+                    e.reason,
+                    FailureReason.ProvidedCheckFailure(e),
+                    event.getLocale()
+                )
             }
 
             emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
@@ -163,8 +168,8 @@ public class PublicSlashCommand<A : Arguments, M : ModalForm>(
     override suspend fun respondText(
         context: PublicSlashCommandContext<A, M>,
         message: String,
-        failureType: FailureReason<*>
+        failureType: FailureReason<*>,
     ) {
-        context.respond { settings.failureResponseBuilder(this, message, failureType) }
+        context.respond { settings.failureResponseBuilder(this, message, failureType, context.getLocale()) }
     }
 }

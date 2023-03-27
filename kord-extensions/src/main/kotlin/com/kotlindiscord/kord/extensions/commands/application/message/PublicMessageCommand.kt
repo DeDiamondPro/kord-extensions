@@ -73,7 +73,12 @@ public class PublicMessageCommand<M : ModalForm>(
             }
         } catch (e: DiscordRelayedException) {
             event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+                settings.failureResponseBuilder(
+                    this,
+                    e.reason,
+                    FailureReason.ProvidedCheckFailure(e),
+                    event.getLocale()
+                )
             }
 
             emitEventAsync(PublicMessageCommandFailedChecksEvent(this, event, e.reason))
@@ -143,8 +148,8 @@ public class PublicMessageCommand<M : ModalForm>(
     override suspend fun respondText(
         context: PublicMessageCommandContext<M>,
         message: String,
-        failureType: FailureReason<*>
+        failureType: FailureReason<*>,
     ) {
-        context.respond { settings.failureResponseBuilder(this, message, failureType) }
+        context.respond { settings.failureResponseBuilder(this, message, failureType, context.getLocale()) }
     }
 }

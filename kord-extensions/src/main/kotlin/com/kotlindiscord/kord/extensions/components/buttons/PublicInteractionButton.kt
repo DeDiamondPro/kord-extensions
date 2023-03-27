@@ -64,7 +64,12 @@ public open class PublicInteractionButton<M : ModalForm>(
             }
         } catch (e: DiscordRelayedException) {
             event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+                settings.failureResponseBuilder(
+                    this,
+                    e.reason,
+                    FailureReason.ProvidedCheckFailure(e),
+                    event.getLocale()
+                )
             }
 
             return@withLock
@@ -141,8 +146,8 @@ public open class PublicInteractionButton<M : ModalForm>(
     override suspend fun respondText(
         context: PublicInteractionButtonContext<M>,
         message: String,
-        failureType: FailureReason<*>
+        failureType: FailureReason<*>,
     ) {
-        context.respond { settings.failureResponseBuilder(this, message, failureType) }
+        context.respond { settings.failureResponseBuilder(this, message, failureType, context.getLocale()) }
     }
 }

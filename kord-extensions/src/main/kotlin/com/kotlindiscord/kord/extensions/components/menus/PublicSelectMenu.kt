@@ -63,7 +63,12 @@ public abstract class PublicSelectMenu<C, M : ModalForm>(
             }
         } catch (e: DiscordRelayedException) {
             event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+                settings.failureResponseBuilder(
+                    this,
+                    e.reason,
+                    FailureReason.ProvidedCheckFailure(e),
+                    event.getLocale()
+                )
             }
 
             return@withLock
@@ -130,6 +135,6 @@ public abstract class PublicSelectMenu<C, M : ModalForm>(
         message: String,
         failureType: FailureReason<*>,
     ) {
-        context.respond { settings.failureResponseBuilder(this, message, failureType) }
+        context.respond { settings.failureResponseBuilder(this, message, failureType, context.getLocale()) }
     }
 }

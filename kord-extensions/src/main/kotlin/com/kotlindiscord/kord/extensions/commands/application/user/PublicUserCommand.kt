@@ -73,7 +73,12 @@ public class PublicUserCommand<M : ModalForm>(
             }
         } catch (e: DiscordRelayedException) {
             event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+                settings.failureResponseBuilder(
+                    this,
+                    e.reason,
+                    FailureReason.ProvidedCheckFailure(e),
+                    event.getLocale()
+                )
             }
 
             emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
@@ -141,8 +146,8 @@ public class PublicUserCommand<M : ModalForm>(
     override suspend fun respondText(
         context: PublicUserCommandContext<M>,
         message: String,
-        failureType: FailureReason<*>
+        failureType: FailureReason<*>,
     ) {
-        context.respond { settings.failureResponseBuilder(this, message, failureType) }
+        context.respond { settings.failureResponseBuilder(this, message, failureType, context.getLocale()) }
     }
 }

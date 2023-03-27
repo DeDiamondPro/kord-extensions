@@ -20,6 +20,7 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
@@ -53,7 +54,12 @@ public class UnsafeUserCommand<M : ModalForm>(
             }
         } catch (e: DiscordRelayedException) {
             event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+                settings.failureResponseBuilder(
+                    this,
+                    e.reason,
+                    FailureReason.ProvidedCheckFailure(e),
+                    event.getLocale()
+                )
             }
 
             emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, e.reason))
@@ -110,15 +116,15 @@ public class UnsafeUserCommand<M : ModalForm>(
     override suspend fun respondText(
         context: UnsafeUserCommandContext<M>,
         message: String,
-        failureType: FailureReason<*>
+        failureType: FailureReason<*>,
     ) {
         when (context.interactionResponse) {
             is PublicMessageInteractionResponseBehavior -> context.respondPublic {
-                settings.failureResponseBuilder(this, message, failureType)
+                settings.failureResponseBuilder(this, message, failureType, context.getLocale())
             }
 
             is EphemeralMessageInteractionResponseBehavior -> context.respondEphemeral {
-                settings.failureResponseBuilder(this, message, failureType)
+                settings.failureResponseBuilder(this, message, failureType, context.getLocale())
             }
         }
     }
