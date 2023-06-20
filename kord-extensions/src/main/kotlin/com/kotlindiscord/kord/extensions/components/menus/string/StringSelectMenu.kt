@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.components.menus.string
 import com.kotlindiscord.kord.extensions.components.menus.*
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.SelectOptionBuilder
+import dev.kord.rest.builder.component.options
 
 /** Interface for string select menus. **/
 public interface StringSelectMenu {
@@ -55,7 +56,6 @@ public interface StringSelectMenu {
         builder.stringSelect(selectMenu.id) {
             this.allowedValues = selectMenu.minimumChoices..selectMenu.maximumChoices!!
 
-            @Suppress("DEPRECATION")  // Kord suppresses this in their own class
             this.options.addAll(this@StringSelectMenu.options)
             this.placeholder = selectMenu.placeholder
             this.disabled = selectMenu.disabled

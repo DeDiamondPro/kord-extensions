@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     repositories {
         maven {
-            name = "KotDis"
-            url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
+            name = "Sonatype Snapshots"
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
         }
     }
 }
@@ -17,18 +17,17 @@ plugins {
     `ksp-module`
 }
 
+metadata {
+    name = "KordEx Core"
+    description = "Core Kord Extensions module, providing everything you need to write a bot with KordEx"
+}
+
 dependencies {
-    api(libs.h2)
-    api(libs.hikari)
     api(libs.icu4j)  // For translations
     api(libs.koin.core)
     api(libs.koin.logger)
 
-    api(libs.kord) {
-        capabilities {
-            requireCapability(libs.kord.voice.get().toString())
-        }
-    }
+    api(libs.kord)
 
     api(libs.logging) // Basic logging setup
     api(libs.kx.ser)
@@ -50,6 +49,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)
     testImplementation(libs.logback)
+    testImplementation(libs.logback.groovy)
 
     ksp(project(":annotation-processor"))
     kspTest(project(":annotation-processor"))

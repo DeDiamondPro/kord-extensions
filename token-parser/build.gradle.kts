@@ -5,6 +5,11 @@ plugins {
     `tested-module`
 }
 
+metadata {
+    name = "KordEx: Token Parser"
+    description = "Simple token-based command parser, for parsing basic commands from messages sent on chat networks"
+}
+
 dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.logging) // Basic logging setup
@@ -18,6 +23,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)
     testImplementation(libs.logback)
+    testImplementation(libs.logback.groovy)
 }
 
 dokkaModule {
